@@ -11,21 +11,32 @@ import java.util.stream.IntStream;
 public class Exception {
     public static void main(String[] args) {
         List<String> data = List.of("ABC","2");
-        unhandled(data);
+        //unhandled(data);
 
-        List<Integer> longList = new ArrayList<>();
-        for (int i = 0; i < 100000000; i++) {
+        ArrayList<Integer> longList = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
             longList.add(i);
         }
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         executorService.submit(()->{
-            for (int i = 0; i < 1000; i++) {
-                longList.remove(i);
+            try {
+                Thread.sleep(4);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            System.out.println("removing");
+            longList.remove(18);
         });
         executorService.submit(()->{
-            longList.forEach(i->System.out.println(i));
+            longList.stream().forEach(i->{
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(i);
+            });
         });
         executorService.shutdown();
     }
